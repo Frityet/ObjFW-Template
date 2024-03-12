@@ -6,7 +6,7 @@
 
 - (void)applicationDidFinishLaunching: (OFNotification *)notification
 {
-    OFLog(@"Hello, world!");
+    @throw [OFException exception];
     [OFApplication terminate];
 }
 
@@ -15,9 +15,9 @@
 #if defined(OF_WINDOWS)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    int argc;
-    LPWSTR *argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-    return OFApplicationMain(&argc, &argv, [[Application alloc] init]);
+    extern int __argc;
+    extern char **__argv;
+    return OFApplicationMain(&__argc, &__argv, [[Application alloc] init]);
 }
 #else
 int main(int argc, char *argv[])

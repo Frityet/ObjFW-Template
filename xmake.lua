@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 option("system-objfw")
 do
     set_default(false)
@@ -30,7 +31,9 @@ local mflags = {
 
 --Objective C linker flags
 local ldflags = {
-    release = {},
+    release = {
+        "-flto"
+    },
     debug = {},
     regular = {}
 }
@@ -38,10 +41,7 @@ local ldflags = {
 --C standard to use, `gnulatest` means the latest C standard + GNU extensions
 set_languages("gnulatest")
 
---mode.debug = Debug (-g, etc)
---mode.release = Release (-O2, etc)
---mode.check = Debug + Sanitizers
-add_rules("mode.debug", "mode.release", "mode.check")
+
 
 if has_config("system-objfw") then
     add_requires("objfw", { system = true, configs = { shared = is_kind("shared") } })
@@ -64,20 +64,26 @@ do
     add_mflags(mflags.regular)
     add_ldflags(ldflags.regular)
 
-    if is_mode("debug") then
+    if is_mode("debug", "check") then
         add_mflags(mflags.debug)
         add_ldflags(ldflags.debug)
 
         add_defines("PROJECT_DEBUG")
-    elseif is_mode("check") then
-        cprint("${yellow}WARNING: Sanitizers make ObjFW run extremely slow")
-        for _, v in ipairs(sanitizers) do
-            add_mflags("-fsanitize=" .. v)
-            add_ldflags("-fsanitize=" .. v)
+        if is_mode("check") then
+            cprint("${yellow}WARNING: Sanitizers make ObjFW run extremely slow")
+            for _, v in ipairs(sanitizers) do
+                add_mflags("-fsanitize=" .. v)
+                add_ldflags("-fsanitize=" .. v)
+            end
         end
-    elseif is_mode("release") then
+    elseif is_mode("release", "minsizerel") then
         add_mflags(mflags.release)
         add_ldflags(ldflags.release)
+        if is_mode("minsizerel") then
+            set_symbols("hidden")
+            set_optimize("smallest")
+            set_strip("all")
+        end
     end
 end
 target_end()
