@@ -6,7 +6,7 @@
 
 - (void)applicationDidFinishLaunching: (OFNotification *)notification
 {
-    @throw [OFException exception];
+
     [OFApplication terminate];
 }
 

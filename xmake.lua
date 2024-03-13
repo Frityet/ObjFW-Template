@@ -1,12 +1,4 @@
 ---@diagnostic disable: undefined-global
-option("system-objfw")
-do
-    set_default(false)
-    set_showmenu(true)
-    set_category("option")
-    set_description("Use system ObjFW, instead of the one provided by xrepo")
-end
-option_end()
 
 --Packages, you can use `xrepo search <name>` to search packages,
 --and prefix with other package managers, for example `vcpkg::pcre2` in order to use their packages.
@@ -41,15 +33,7 @@ local ldflags = {
 --C standard to use, `gnulatest` means the latest C standard + GNU extensions
 set_languages("gnulatest")
 
-
-
-if has_config("system-objfw") then
-    add_requires("objfw", { system = true, configs = { shared = is_kind("shared") } })
-else
-    add_requires("xmake::objfw", { alias = "objfw", system = false, configs = { shared = is_kind("shared") } })
-end
-
-
+add_requires("objfw", { configs = { shared = is_kind("shared") } })
 add_requires(packages, { configs = { shared = is_kind("shared") } })
 
 target("MyProject")
