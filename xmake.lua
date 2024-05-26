@@ -30,17 +30,26 @@ local ldflags = {
     regular = {}
 }
 
+option("tls")
+do
+    set_default(is_plat("macosx") and "securetransport" or "openssl")
+    set_values("securetransport", "openssl", "gnutls", "mbedtls")
+    set_showmenu(true)
+end
+option_end()
+
 --C standard to use, `gnulatest` means the latest C standard + GNU extensions
 set_languages("gnulatest")
 
-add_requires("objfw", { configs = { shared = is_kind("shared") } })
 add_requires(packages, { configs = { shared = is_kind("shared") } })
+add_requires("objfw", { configs = { shared = is_kind("shared"), tls = config("tls") } }) 
 
 target("MyProject")
 do
     set_kind("binary")
     add_packages("objfw")
     add_packages(packages)
+    add_options("tls")
 
     add_files("src/**.m")
     add_headerfiles("src/**.h")
