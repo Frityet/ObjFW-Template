@@ -35,6 +35,7 @@ do
     set_default(is_plat("macosx") and "securetransport" or "openssl")
     set_values("securetransport", "openssl", "gnutls", "mbedtls")
     set_showmenu(true)
+    set_description("TLS backend to use")
 end
 option_end()
 
@@ -42,7 +43,19 @@ option_end()
 set_languages("gnulatest")
 
 add_requires(packages, { configs = { shared = is_kind("shared") } })
-add_requires("objfw", { configs = { shared = is_kind("shared"), tls = config("tls") } }) 
+if is_config("tls", "securetransport") then
+    if not is_plat("macosx") then
+        raise("SecureTransport is only available on macOS")
+    end
+
+    add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "securetransport" } })
+elseif is_config("tls", "openssl") then
+    add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "openssl" } })
+elseif is_config("tls", "gnutls") then
+    add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "gnutls" } })
+elseif is_config("tls", "mbedtls") then
+    add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "mbedtls" } })
+end
 
 target("MyProject")
 do
@@ -50,6 +63,10 @@ do
     add_packages("objfw")
     add_packages(packages)
     add_options("tls")
+
+    -- on_load(function (target)
+    --     add_requires("objfw", { configs = { shared = is_kind("shared"), tls = config("tls") } })
+    -- end)
 
     add_files("src/**.m")
     add_headerfiles("src/**.h")

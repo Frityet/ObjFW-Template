@@ -6,6 +6,7 @@
 
 - (void)applicationDidFinishLaunching: (OFNotification *)notification
 {
+    [OFStdOut writeLine: @"Hello, World!"];
 
     [OFApplication terminate];
 }
