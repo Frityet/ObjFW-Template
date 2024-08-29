@@ -1,0 +1,18 @@
+{
+    "build": {
+        "dockerfile": "../Containerfile"
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "llvm-vs-code-extensions.vscode-clangd"
+            ]
+        }
+    },
+    "postStartCommand":{
+        "config": "/root/.local/bin/xmake config --mode=debug --toolchain=clang --kind=static",
+        "add-clangd": "apk add clang18-extra-tools",
+        "compile-commands": "/root/.local/bin/xmake project -k compile_commands --lsp=clangd"
+    }
+}

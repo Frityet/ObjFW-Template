@@ -1,3 +1,4 @@
+#include <ObjFW/OFApplication.h>
 #import <ObjFW/ObjFW.h>
 
 @interface Application : OFObject<OFApplicationDelegate> @end
@@ -7,6 +8,7 @@
 - (void)applicationDidFinishLaunching: (OFNotification *)notification
 {
     [OFStdOut writeLine: @"Hello, World!"];
+    [OFStdOut writeFormat: @"OS: %@\n", OFSystemInfo.operatingSystemName];
 
     [OFApplication terminate];
 }
