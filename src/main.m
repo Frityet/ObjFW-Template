@@ -1,4 +1,3 @@
-#include <ObjFW/OFApplication.h>
 #import <ObjFW/ObjFW.h>
 
 @interface Application : OFObject<OFApplicationDelegate> @end
