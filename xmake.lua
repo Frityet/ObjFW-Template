@@ -32,7 +32,6 @@ local ldflags = {
 
 option("tls")
 do
-    set_default(is_plat("macosx") and "securetransport" or "openssl")
     set_values("securetransport", "openssl", "gnutls", "mbedtls")
     set_showmenu(true)
     set_description("TLS backend to use")
@@ -55,6 +54,8 @@ elseif is_config("tls", "gnutls") then
     add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "gnutls" } })
 elseif is_config("tls", "mbedtls") then
     add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "mbedtls" } })
+else
+    add_requires("objfw", { configs = { shared = is_kind("shared") } }) --autodetect
 end
 
 add_rules("mode.debug", "mode.release", "mode.minsizerel", "mode.check")
@@ -65,10 +66,6 @@ do
     add_packages("objfw")
     add_packages(packages)
     add_options("tls")
-
-    -- on_load(function (target)
-    --     add_requires("objfw", { configs = { shared = is_kind("shared"), tls = config("tls") } })
-    -- end)
 
     add_files("src/**.m")
     add_headerfiles("src/**.h")
