@@ -18,6 +18,16 @@ local mflags = {
     },
     regular = {
         "-Wall", "-Wextra", "-Werror",
+        "-Wanon-enum-enum-conversion",
+        "-Wassign-enum",
+        "-Wenum-conversion",
+        "-Wenum-enum-conversion",
+        "-Wno-unused-function",
+        "-Wno-unused-parameter",
+        "-Wnull-dereference",
+        "-Wnull-conversion",
+        "-Wnullability-completeness",
+        "-Wnullable-to-nonnull-conversion"
     }
 }
 
