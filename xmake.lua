@@ -57,6 +57,8 @@ elseif is_config("tls", "mbedtls") then
     add_requires("objfw", { configs = { shared = is_kind("shared"), tls = "mbedtls" } })
 end
 
+add_rules("mode.debug", "mode.release", "mode.minsizerel", "mode.check")
+
 target("MyProject")
 do
     set_kind("binary")
@@ -78,7 +80,6 @@ do
         add_mflags(mflags.debug)
         add_ldflags(ldflags.debug)
 
-        add_defines("PROJECT_DEBUG")
         if is_mode("check") then
             cprint("${yellow}WARNING: Sanitizers make ObjFW run extremely slow")
             for _, v in ipairs(sanitizers) do
